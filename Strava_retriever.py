@@ -19,6 +19,7 @@ driver.get(strava_url)
 login_btn_candidates = driver.find_elements_by_class_name("btn-login")
 btn = login_btn_candidates[0]
 btn.click() #TODO : check that we are on the right button, that the element is displayed
+driver.implicitly_wait(8)
 email_fields = driver.find_elements_by_name("email")
 for candidate in email_fields:
 	if candidate.is_displayed() and "adresse" in candidate.get_attribute("placeholder"):
@@ -48,3 +49,22 @@ for menu in dd_menus:
 		break
 
 # Retrieve history and in particular last activity
+driver.implicitly_wait(8)
+
+## TODO: check we only have one element and this element is indeed the "Date" column
+top_date_col = driver.find_elements_by_class_name("active")
+top_date_col = top_date_col[0]
+
+assert top_date_col.text == u'Date'
+
+## TODO: reput the column in descending order : if top_date_col.get_attribute("xx") == u'DESC' then get child and click it
+date_loc_x = top_date_col.location["x"]
+
+data_candidates = driver.find_elements_by_class_name("view-col")
+dates  = []
+for elem in data_candidates:
+	if elem.location["x"] == date_loc_x:
+		dates.append(elem.text)
+
+## TODO: Extract dates in readable format and return last date
+print dates
