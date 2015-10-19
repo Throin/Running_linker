@@ -2,6 +2,8 @@ from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.action_chains import ActionChains
 
+from CustDate import CustDate
+
 # personal module should contain your own personal information such as login, password etc.
 from personal import strava_login, strava_pw
 
@@ -36,7 +38,7 @@ assert "Tableau" in driver.title
 
 		
 # Navigate to activities history
-# This history can be reached from the dashboard through drop down menu "Entrainement" and link "Mes activités"
+# This history can be reached from the dashboard through drop down menu "Entrainement" and link "Mes activites"
 dd_menus = driver.find_elements_by_class_name("drop-down-menu")
 for menu in dd_menus:
 	if menu.get_attribute("class") == "drop-down-menu enabled" and menu.text == u'Entra\xeenement':
@@ -68,3 +70,10 @@ for elem in data_candidates:
 
 ## TODO: Extract dates in readable format and return last date
 print dates
+cust_dates = []
+for indiv_date in dates:
+	# First separate the day from the date, then the different element from the date. To robustify this, we would need to check the format is indeed what we assume here - probably higher in the code, while parsing the "Date" column head
+	processed_raw = indiv_date.split()
+	processed_figures = processed_raw[1].split("/")
+	cust_dates.append(CustDate(day = processed_figures[0], month = processed_figures[1], year = processed_figures[2]))
+
