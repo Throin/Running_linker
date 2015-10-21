@@ -35,16 +35,46 @@ class CustDate:
 	## TODO: complete with other operators
 	
 	def __le__(self, other):
-		return False
+		if isinstance(other, CustDate):
+			if self < other or self == other:
+				return True
+			else:
+				return False
+		else:
+			return False
 		
 	def __eq__(self, other):
-		return False
+		if isinstance(other, CustDate):
+			if self.year == other.year and self.month == other.month and self.day == other.day:
+				return True
+			else:
+				return False
+		else:
+			return False
 	
 	def __ne__(self, other):
-		return True
+		if isinstance(other, CustDate):
+			if not self == other:
+				return True
+			else:
+				return False
+		else:
+			return True
 		
 	def __gt__(self, other):
-		return False
+		if isinstance(other, CustDate):
+			if not (self <= other):
+				return True
+			else:
+				return False
+		else:
+			return False
 		
 	def __ge__(self, other):
-		return False
+		if isinstance(other, CustDate):
+			if self > other or self == other:
+				return True
+			else:
+				return False
+		else:
+			return False

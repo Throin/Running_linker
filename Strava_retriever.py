@@ -74,6 +74,15 @@ cust_dates = []
 for indiv_date in dates:
 	# First separate the day from the date, then the different element from the date. To robustify this, we would need to check the format is indeed what we assume here - probably higher in the code, while parsing the "Date" column head
 	processed_raw = indiv_date.split()
-	processed_figures = processed_raw[1].split("/")
+	processed_figures = [int(x) for x in processed_raw[1].split("/")]
 	cust_dates.append(CustDate(day = processed_figures[0], month = processed_figures[1], year = processed_figures[2]))
 
+if cust_dates:
+	most_recent_date = cust_dates[0]
+	for date in cust_dates:
+		if date > most_recent_date: ## TODO: implement > operator and modify here
+			most_recent_date = date
+else:
+	most_recent_date = 0
+
+print "l'activite la plus recente date de :", most_recent_date
