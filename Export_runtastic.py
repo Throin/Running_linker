@@ -3,11 +3,22 @@ from selenium.webdriver.common.keys import Keys
 import time # Probably not usefull, check wether is the case or not
 import sys 
 
-my_password = "fedhop"
+from personal import runtastic_pw, runtastic_login
+from CustDate import CustDate
 
 passed_args = sys.argv
+date_components = passed_args[1:]
 for s in sys.argv:
-    print s
+#    print s
+	pass
+	
+last_strava_activity = 0
+if len(date_components) == 3:
+	last_strava_activity = CustDate(year = date_components[0], month = date_components[1], day = date_components[2])
+
+if last_strava_activity:
+	print last_strava_activity
+	
 
 driver = webdriver.Firefox()
 driver.get("https://www.runtastic.com")
@@ -43,8 +54,8 @@ for elem in input_fields:
 
 # Fill fields and connect to session
 if mail_field_found and pw_field_found:
-    mail_input_field.send_keys("throin@hotmail.com")
-    pw_input_field.send_keys(my_password)
+    mail_input_field.send_keys(runtastic_login)
+    pw_input_field.send_keys(runtastic_pw)
     pw_input_field.send_keys(Keys.RETURN)
 
 ########## ########## ########## ########## ########## ##########

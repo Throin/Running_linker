@@ -62,6 +62,7 @@ assert top_date_col.text == u'Date'
 ## TODO: reput the column in descending order : if top_date_col.get_attribute("xx") == u'DESC' then get child and click it
 date_loc_x = top_date_col.location["x"]
 
+## TODO: cross check with "running" activity, we don't want to mix activities
 data_candidates = driver.find_elements_by_class_name("view-col")
 dates  = []
 for elem in data_candidates:
