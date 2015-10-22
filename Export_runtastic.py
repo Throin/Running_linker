@@ -70,6 +70,23 @@ except:
     print "Could not click :'( "
         
 
+still_unimported = True
+while(still_unimported):
+	# unused for the moment though might be usefull summary_table = driver.find_elements_by_class_name("id")
+	candidates = driver.find_elements_by_partial_link_text("Course")
+	for cand in candidates:
+		upper = cand.find_element_by_xpath("../..")
+		if upper:
+			raw_infos = upper.get_attribute("class")
+			if "year" in raw_infos and "id" in raw_infos and "month" in raw_infos and "day" in raw_infos:
+				print "found interesting activity : ", raw_infos
+				## TODO: process info to see if we are 
+			else:
+				# print "y:",  "year" in raw_infos, " / m:", "month" in raw_infos, " / d:", "day" in raw_infos, " /id:", "id" in raw_infos	
+	
+	## TODO: decide if we have to keep on browsing history - and in that case actually browse it - or if we have reached the end
+	still_unimported = False
+	
 
 ########## This is the code graveyard, in order to come back from the dead when the time shall be right ########## 
 
