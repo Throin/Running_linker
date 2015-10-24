@@ -90,7 +90,15 @@ while(still_unimported):
 					cand.send_keys(Keys.CONTROL + Keys.RETURN)
 					driver.find_element_by_tag_name("body").send_keys(Keys.CONTROL + Keys.TAB)
 					## TODO: dl the gps trace
-					
+					options_buttons = driver.find_elements_by_id("show_more_options")
+					for btn in options_buttons:
+						if btn.get_attribute("class") == "" and btn.is_displayed():
+							btn.click()
+							childs = btn.find_elements_by_xpath(".//a")
+							for elem in childs:
+								if "charger" in elem.text and elem.is_displayed():
+									print "let's dl"
+									elem.click()
 					
 				## TODO: process info to see if we are 
 			else:
