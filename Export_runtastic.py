@@ -14,7 +14,7 @@ for s in sys.argv:
 	
 last_strava_activity = 0
 if len(date_components) == 3:
-	last_strava_activity = CustDate(year = date_components[0], month = date_components[1], day = date_components[2])
+	last_strava_activity = CustDate(year = int(date_components[0]), month = int(date_components[1]), day = int(date_components[2]))
 
 if last_strava_activity:
 	print last_strava_activity
@@ -79,9 +79,16 @@ while(still_unimported):
 		if upper:
 			raw_infos = upper.get_attribute("class")
 			if "year" in raw_infos and "id" in raw_infos and "month" in raw_infos and "day" in raw_infos:
-				print "found interesting activity : ", raw_infos
+				# print "found interesting activity : ", raw_infos
+				year_infos = int(raw_infos.split("year_")[1].split()[0])
+				month_infos = int(raw_infos.split("month_")[1].split()[0])
+				day_infos = int(raw_infos.split("day_")[1].split()[0])
+				found_date = CustDate(year = year_infos, month = month_infos, day = day_infos)
+				if found_date > last_strava_activity:
+					print "activity to add, dated: ", found_date
 				## TODO: process info to see if we are 
 			else:
+				pass
 				# print "y:",  "year" in raw_infos, " / m:", "month" in raw_infos, " / d:", "day" in raw_infos, " /id:", "id" in raw_infos	
 	
 	## TODO: decide if we have to keep on browsing history - and in that case actually browse it - or if we have reached the end
