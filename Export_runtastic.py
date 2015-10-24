@@ -86,6 +86,12 @@ while(still_unimported):
 				found_date = CustDate(year = year_infos, month = month_infos, day = day_infos)
 				if found_date > last_strava_activity:
 					print "activity to add, dated: ", found_date
+					curr_w_h = driver.current_window_handle
+					cand.send_keys(Keys.CONTROL + Keys.RETURN)
+					driver.find_element_by_tag_name("body").send_keys(Keys.CONTROL + Keys.TAB)
+					## TODO: dl the gps trace
+					
+					
 				## TODO: process info to see if we are 
 			else:
 				pass
