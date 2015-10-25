@@ -2,6 +2,7 @@ from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 import time # Probably not usefull, check wether is the case or not
 import sys 
+import os
 
 from personal import runtastic_pw, runtastic_login
 from CustDate import CustDate
@@ -20,7 +21,16 @@ if last_strava_activity:
 	print last_strava_activity
 	
 
-driver = webdriver.Firefox()
+profile = webdriver.FirefoxProfile()
+profile.set_preference("browser.download.panel.shown", False)
+profile.set_preference("browser.helperApps.neverAsk.saveToDisk", "application/pdf;application/octet-stream")
+profile.set_preference("browser.helperApps.alwaysAsk.force", False);
+profile.set_preference("browser.download.folderList", 2)
+profile.set_preference("browser.download.manager.showWhenStarting", False)
+profile.set_preference("browser.download.dir", os.getcwd())
+
+driver = webdriver.Firefox(firefox_profile=profile)
+
 driver.get("https://www.runtastic.com")
 
 # Simple check on the website we've landed on
@@ -69,7 +79,7 @@ try:
 except:
     print "Could not click :'( "
         
-
+# Actually we can go to the most recent history and use the left navigation. The most recent history is just the history where we cannot right navigate
 still_unimported = True
 while(still_unimported):
 	# unused for the moment though might be usefull summary_table = driver.find_elements_by_class_name("id")
@@ -89,6 +99,7 @@ while(still_unimported):
 					curr_w_h = driver.current_window_handle
 					cand.send_keys(Keys.CONTROL + Keys.RETURN)
 					driver.find_element_by_tag_name("body").send_keys(Keys.CONTROL + Keys.TAB)
+					driver.switch_to_window(curr_w_h) # switch focus to current window, ie. the window that has just been opened
 					## TODO: dl the gps trace
 					options_buttons = driver.find_elements_by_id("show_more_options")
 					for btn in options_buttons:
@@ -99,6 +110,7 @@ while(still_unimported):
 								if "charger" in elem.text and elem.is_displayed():
 									print "let's dl"
 									elem.click()
+									driver.find_elements_by_partial_link_text(".tcx")[0].click()
 					
 				## TODO: process info to see if we are 
 			else:
