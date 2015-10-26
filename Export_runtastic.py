@@ -22,12 +22,27 @@ if last_strava_activity:
 	
 
 profile = webdriver.FirefoxProfile()
-profile.set_preference("browser.download.panel.shown", False)
-profile.set_preference("browser.helperApps.neverAsk.saveToDisk", "application/pdf;application/octet-stream")
-profile.set_preference("browser.helperApps.alwaysAsk.force", False);
 profile.set_preference("browser.download.folderList", 2)
-profile.set_preference("browser.download.manager.showWhenStarting", False)
 profile.set_preference("browser.download.dir", os.getcwd())
+profile.set_preference("browser.helperApps.neverAsk.saveToDisk", "application/gpx+tcx");
+profile.set_preference("browser.helperApps.alwaysAsk.force", False);
+profile.set_preference("browser.download.manager.showWhenStarting", False);
+
+# profile.set_preference("browser.download.panel.shown", False)
+# profile.set_preference("browser.helperApps.neverAsk.saveToDisk", "application/pdf;application/octet-stream")
+# profile.set_preference("browser.helperApps.alwaysAsk.force", False);
+# profile.set_preference("browser.download.manager.showWhenStarting", False)
+
+# profile.set_preference("browser.download.alertOnEXEOpen", False);
+# profile.set_preference("browser.download.manager.focusWhenStarting", False);
+# profile.set_preference("browser.download.manager.alertOnEXEOpen", False);
+# profile.set_preference("browser.download.manager.closeWhenDone", False);
+# profile.set_preference("browser.download.manager.showAlertOnComplete", False);
+# profile.set_preference("browser.download.manager.useWindow", False);
+# profile.set_preference("browser.download.manager.showWhenStarting", False);
+# profile.set_preference("services.sync.prefs.sync.browser.download.manager.showWhenStarting", False);
+# profile.set_preference("pdfjs.disabled", True);
+
 
 driver = webdriver.Firefox(firefox_profile=profile)
 
