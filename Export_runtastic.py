@@ -9,6 +9,20 @@ from CustDate import CustDate
 
 month_conversion = {"Jan": 1, u'F\xe9vr.': 2, "Mars": 3, "Avr": 4, "Mai": 5, "Juin": 6, "Juil": 7, u'Ao\xfbt': 8, "Sept": 9, "Oct": 10, "Nov": 11, u'D\xe9c': 12}
 
+def browse_buttons_and_navigate(driver):
+	options_buttons = driver.find_elements_by_id("show_more_options")
+	for btn in options_buttons:
+		if btn.get_attribute("class") == "" and btn.is_displayed():
+			btn.click()
+			childs = btn.find_elements_by_xpath(".//a")
+			for elem in childs:
+				if "charger" in elem.text and elem.is_displayed():
+					print "let's dl"
+					elem.click()
+					driver.find_elements_by_partial_link_text(".tcx")[0].click()
+					driver.find_elements_by_class_name("nav_left")[0].click()
+					return
+					
 passed_args = sys.argv
 date_components = passed_args[1:]
 for s in sys.argv:
@@ -23,11 +37,12 @@ if last_strava_activity:
 	print last_strava_activity
 	
 
-# "_".join(time.asctime().replace(":", "_").split())
+dl_dir = os.getcwd() + "\\" +"_".join(time.asctime().replace(":", "_").split())
+print dl_dir 
 
 profile = webdriver.FirefoxProfile()
 profile.set_preference("browser.download.folderList", 2)
-profile.set_preference("browser.download.dir", os.getcwd())
+profile.set_preference("browser.download.dir", dl_dir)
 profile.set_preference("browser.helperApps.neverAsk.saveToDisk", "application/gpx+tcx");
 profile.set_preference("browser.helperApps.alwaysAsk.force", False);
 profile.set_preference("browser.download.manager.showWhenStarting", False);
@@ -130,23 +145,22 @@ while (date_in_range):
 	day_current = int(act_date_components[0])
 	act_date = CustDate(year = year_current, month = month_current, day = day_current)
 	if act_date > last_strava_activity:
-		options_buttons = driver.find_elements_by_id("show_more_options")
-		for btn in options_buttons:
-			if btn.get_attribute("class") == "" and btn.is_displayed():
-				btn.click()
-				childs = btn.find_elements_by_xpath(".//a")
-				for elem in childs:
-					if "charger" in elem.text and elem.is_displayed():
-						print "let's dl"
-						elem.click()
-						driver.find_elements_by_partial_link_text(".tcx")[0].click()
-						driver.find_elements_by_class_name("nav_left")[0].click()
-						break ##TODO: get out of the multiple loops properly 
+		browse_buttons_and_navigate(driver)
+		# options_buttons = driver.find_elements_by_id("show_more_options")
+		# for btn in options_buttons:
+			# if btn.get_attribute("class") == "" and btn.is_displayed():
+				# btn.click()
+				# childs = btn.find_elements_by_xpath(".//a")
+				# for elem in childs:
+					# if "charger" in elem.text and elem.is_displayed():
+						# print "let's dl"
+						# elem.click()
+						# driver.find_elements_by_partial_link_text(".tcx")[0].click()
+						# driver.find_elements_by_class_name("nav_left")[0].click()
+						# break ##TODO: get out of the multiple loops properly 
 	else:
 		date_in_range = False
 				
-
-	
 
 ########## This is the code graveyard, in order to come back from the dead when the time shall be right ########## 
 
