@@ -1,5 +1,9 @@
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import WebDriverWait
+import selenium.webdriver.support.ui as ui
 import time # Probably not usefull, check wether is the case or not
 import sys 
 import os
@@ -68,7 +72,55 @@ def log_onto_runtastic(driver):
 		mail_input_field.send_keys(runtastic_login)
 		pw_input_field.send_keys(runtastic_pw)
 		pw_input_field.send_keys(Keys.RETURN)
+
+def extract_activity_cardinal(sel_element):
+	base = sel_element.text.split("\n")
+	if len(base) >= 2:
+		return int(base[1])
+	else:
+		return 0
+		
+def navigate_to_existing_activity(driver):
+	# Global goal is to avoid charging too long pages which could slow the execution or even cause its failure
 	
+	# First, check wether the current selected month has any activity 
+	top_activity_history = driver.find_element_by_class_name("years")
+	history_elements = top_activity_history.find_elements_by_xpath(".//a")
+	for e in history_elements:
+		e_class = e.get_attribute("class")
+		if "month" in e_class and "selected" in e_class:
+			curr_month_cardinal = extract_activity_cardinal(e)
+			
+		elif "year" in e_class and "selected" in e_class:
+			curr_year_cardinal = extract_activity_cardinal(e)
+	
+	if curr_month_cardinal > 0:
+		print "Current month seems fine, proceeding"
+		return True
+	
+	if curr_year_cardinal > 0:
+		print "Current year seems fine, looking for relevant month"
+		# card = 0
+		for e in history_elements:
+			# card = extract_activity_cardinal(e)
+			if "month" in e.get_attribute("class") and extract_activity_cardinal(e) > 0:
+				print "found a relevant month: ", e.get_attribute("class")
+				e.click()
+				return True
+	
+	# If not, browse through other years and select the first year with activity
+	for e in history_elements:
+		card = 0
+		if "year" in e.get_attribute("class"):
+			card = extract_activity_cardinal(e)
+			if card > 0:
+				e.click()
+				return True	
+	
+	# If no activity, an exception should be thrown Exception : we are trying to sync from a profile with 0 activity
+	## TODO: replace the return False by a true exception throwing
+	return False
+		
 def navigate_to_latest_activity(driver, last_strava_activity):
 	actvities_candidate = driver.find_elements_by_class_name("usernav-activities")
 	try:
@@ -76,10 +128,19 @@ def navigate_to_latest_activity(driver, last_strava_activity):
 	except:
 		print "Could not click :'( "
 	# Actually we can go to the most recent history and use the left navigation. The most recent history is just the history where we cannot right navigate
+	
+	navigate_to_existing_activity(driver)
+	# print "finished navigation"
+	# wait = WebDriverWait(driver, 10)
+	ui.WebDriverWait(driver, 15).until(lambda s: len(s.find_elements_by_partial_link_text("Course")) >= 2)
+	# print("wait over")
+	candidates = driver.find_elements_by_partial_link_text("Course")
+	# print len(candidates)
+	# print "finished waiting for loading"
+	
 	still_unimported = True
 	while(still_unimported):
-		# unused for the moment though might be usefull summary_table = driver.find_elements_by_class_name("id")
-		candidates = driver.find_elements_by_partial_link_text("Course")
+		# unused for the moment though might be usefull summary_table = driver.find_elements_by_class_name("id")	
 		for cand in candidates:
 			upper = cand.find_element_by_xpath("../..")
 			if upper:
@@ -90,15 +151,22 @@ def navigate_to_latest_activity(driver, last_strava_activity):
 					month_infos = int(raw_infos.split("month_")[1].split()[0])
 					day_infos = int(raw_infos.split("day_")[1].split()[0])
 					found_date = CustDate(year = year_infos, month = month_infos, day = day_infos)
+					print found_date
 					if found_date > last_strava_activity:
-						print "activity to add, dated: ", found_date
+						# print "activity to add, dated: ", found_date
 						# The following opens a new tab, which originally was supposed to be better for navigation - one new tab for each activity. This is no longer what's considered but we keep the original "new window"
 						curr_w_h = driver.current_window_handle
 						cand.send_keys(Keys.CONTROL + Keys.RETURN)
 						driver.find_element_by_tag_name("body").send_keys(Keys.CONTROL + Keys.TAB)
 						driver.switch_to_window(curr_w_h) # switch focus to current window, ie. the window that has just been opened
 						break 
+				else:
+					pass
+					# print "key words not found"
 		## TODO: decide if we have to keep on browsing history - and in that case actually browse it - or if we have reached the end
+			else:
+				pass
+				# print "no upper part"
 		still_unimported = False
 		
 	can_go_later = True
