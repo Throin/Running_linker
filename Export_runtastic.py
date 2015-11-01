@@ -35,7 +35,6 @@ def instantiate_auto_download_browser()	:
 	profile.set_preference("browser.download.manager.showWhenStarting", False);
 
 	driver = webdriver.Firefox(firefox_profile=profile)
-	driver.get("https://www.runtastic.com")
 	return driver
 
 def log_onto_runtastic(driver):
@@ -70,7 +69,7 @@ def log_onto_runtastic(driver):
 		pw_input_field.send_keys(runtastic_pw)
 		pw_input_field.send_keys(Keys.RETURN)
 	
-def navigate_to_latest_activity(driver):
+def navigate_to_latest_activity(driver, last_strava_activity):
 	actvities_candidate = driver.find_elements_by_class_name("usernav-activities")
 	try:
 		actvities_candidate[0].click()
@@ -155,6 +154,7 @@ if __name__ == "__main__":
 		print last_strava_activity
 		
 	driver = instantiate_auto_download_browser()
+	driver.get("https://www.runtastic.com")
 
 	# Simple check on the website we've landed on
 	assert "Runtastic" in driver.title or "runtastic" in driver.title
@@ -167,7 +167,7 @@ if __name__ == "__main__":
 	##########  Go through second page to activities history ##########
 	# time.sleep(1)
 	driver.implicitly_wait(8) # TODO: try explicit wait, using Expected conditions cf http://selenium-python.readthedocs.org/en/latest/waits.html
-	navigate_to_latest_activity(driver)
+	navigate_to_latest_activity(driver, last_strava_activity)
 	download_relevant_activities(driver, last_strava_activity)
 	
 ########## This is the code graveyard, in order to come back from the dead when the time shall be right ########## 

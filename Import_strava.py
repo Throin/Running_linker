@@ -46,6 +46,7 @@ def navigate_to_upload_panel(browser):
 		upload_menu = browser.find_elements_by_class_name("upload-activity")
 		if upload_menu:
 			upload_menu[0].click()
+			browser.implicitly_wait(4)
 			upload_from_file = browser.find_elements_by_partial_link_text("Fichier")
 			if upload_from_file:
 				upload_from_file[0].click()
