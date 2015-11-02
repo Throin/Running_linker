@@ -95,16 +95,16 @@ def navigate_to_existing_activity(driver):
 			curr_year_cardinal = extract_activity_cardinal(e)
 	
 	if curr_month_cardinal > 0:
-		print "Current month seems fine, proceeding"
+		# print "Current month seems fine, proceeding"
 		return True
 	
 	if curr_year_cardinal > 0:
-		print "Current year seems fine, looking for relevant month"
+		# print "Current year seems fine, looking for relevant month"
 		# card = 0
 		for e in history_elements:
 			# card = extract_activity_cardinal(e)
 			if "month" in e.get_attribute("class") and extract_activity_cardinal(e) > 0:
-				print "found a relevant month: ", e.get_attribute("class")
+				# print "found a relevant month: ", e.get_attribute("class")
 				e.click()
 				return True
 	
@@ -151,7 +151,7 @@ def navigate_to_latest_activity(driver, last_strava_activity):
 					month_infos = int(raw_infos.split("month_")[1].split()[0])
 					day_infos = int(raw_infos.split("day_")[1].split()[0])
 					found_date = CustDate(year = year_infos, month = month_infos, day = day_infos)
-					print found_date
+					# print found_date
 					if found_date > last_strava_activity:
 						# print "activity to add, dated: ", found_date
 						# The following opens a new tab, which originally was supposed to be better for navigation - one new tab for each activity. This is no longer what's considered but we keep the original "new window"

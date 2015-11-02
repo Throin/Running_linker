@@ -62,7 +62,7 @@ def retrieve_last_activity(driver):
 			dates.append(elem.text)
 
 	## TODO: Extract dates in readable format and return last date
-	print dates
+	# print dates
 	cust_dates = []
 	for indiv_date in dates:
 		# First separate the day from the date, then the different element from the date. To robustify this, we would need to check the format is indeed what we assume here - probably higher in the code, while parsing the "Date" column head
