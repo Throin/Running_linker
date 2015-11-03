@@ -13,6 +13,9 @@ from CustDate import CustDate
 
 month_conversion = {"Jan": 1, u'F\xe9vr.': 2, "Mars": 3, "Avr": 4, "Mai": 5, "Juin": 6, "Juil": 7, u'Ao\xfbt': 8, "Sept": 9, "Oct": 10, "Nov": 11, u'D\xe9c': 12}
 
+class NoActivityException(Exception):
+	pass
+
 def browse_buttons_and_navigate(driver):
 	options_buttons = driver.find_elements_by_id("show_more_options")
 	for btn in options_buttons:
@@ -118,7 +121,7 @@ def navigate_to_existing_activity(driver):
 				return True	
 	
 	# If no activity, an exception should be thrown Exception : we are trying to sync from a profile with 0 activity
-	## TODO: replace the return False by a true exception throwing
+	raise NoActivityException("Trying to sync from a profile with 0 activity")
 	return False
 		
 def navigate_to_latest_activity(driver, last_strava_activity):
