@@ -56,11 +56,14 @@ def retrieve_last_activity(driver):
 
 	## TODO: cross check with "running" activity, we don't want to mix activities
 	data_candidates = driver.find_elements_by_class_name("view-col")
+	# print len(data_candidates)
 	dates  = []
 	for elem in data_candidates:
+	
 		if elem.location["x"] == date_loc_x:
 			dates.append(elem.text)
 
+	# print len(dates)
 	## TODO: Extract dates in readable format and return last date
 	# print dates
 	cust_dates = []
@@ -70,6 +73,7 @@ def retrieve_last_activity(driver):
 		processed_figures = [int(x) for x in processed_raw[1].split("/")]
 		cust_dates.append(CustDate(day = processed_figures[0], month = processed_figures[1], year = processed_figures[2]))
 
+	# print len(cust_dates)
 	if cust_dates:
 		most_recent_date = cust_dates[0]
 		for date in cust_dates:
@@ -77,6 +81,7 @@ def retrieve_last_activity(driver):
 				most_recent_date = date
 	else:
 		most_recent_date = 0
+		print len(cust_dates), len(dates), len(data_candidates)
 
 	print "l'activite la plus recente date de :", most_recent_date
 	return most_recent_date

@@ -68,7 +68,7 @@ def log_onto_runtastic(driver):
 			pw_input_field = elem
 			pw_field_found = True
 		else:
-			print ""
+			pass
 
 	# Fill fields and connect to session
 	if mail_field_found and pw_field_found:
@@ -145,6 +145,7 @@ def navigate_to_latest_activity(driver, last_strava_activity):
 	while(still_unimported):
 		# unused for the moment though might be usefull summary_table = driver.find_elements_by_class_name("id")	
 		for cand in candidates:
+			# print "browsing"
 			upper = cand.find_element_by_xpath("../..")
 			if upper:
 				raw_infos = upper.get_attribute("class")
@@ -169,8 +170,10 @@ def navigate_to_latest_activity(driver, last_strava_activity):
 		## TODO: decide if we have to keep on browsing history - and in that case actually browse it - or if we have reached the end
 			else:
 				pass
-				# print "no upper part"
-		still_unimported = False
+				print "no upper part"
+		
+		# print "returning false"
+		return False
 		
 	can_go_later = True
 	while(can_go_later):
@@ -238,7 +241,10 @@ if __name__ == "__main__":
 	##########  Go through second page to activities history ##########
 	# time.sleep(1)
 	driver.implicitly_wait(8) # TODO: try explicit wait, using Expected conditions cf http://selenium-python.readthedocs.org/en/latest/waits.html
-	navigate_to_latest_activity(driver, last_strava_activity)
+	activities_to_dl = navigate_to_latest_activity(driver, last_strava_activity)
+	if not activities_to_dl:
+		print "no activities to dl !"
+		exit()
 	download_relevant_activities(driver, last_strava_activity)
 	
 ########## This is the code graveyard, in order to come back from the dead when the time shall be right ########## 

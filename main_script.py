@@ -17,7 +17,12 @@ st_r.log_onto_strava(browser)
 # browser.implicitly_wait(8)
 st_r.navigate_to_history(browser)
 browser.implicitly_wait(8)
+##TODO: make sure we retrieve a date - the implicit wait does not work 100% of the time
 last_date = st_r.retrieve_last_activity(browser)
+if last_date == 0:
+	print """Warning, no activity could be found browsing Strava account. Something is probably wrong unless your Strava account is brand new. Continue ?"""
+	##TODO: allow user to continue with y/n 
+	raise Exception('no history')
 # browser.implicitly_wait(8)
 
 # Intermediate step to check results relevancy
@@ -26,9 +31,14 @@ last_date = st_r.retrieve_last_activity(browser)
 # Third step : download every activity that is not yet in strava according to its date
 browser.get("https://www.runtastic.com")
 # browser.implicitly_wait(8)
+##TODO: deal with the case where we're not on the page we think after logging (example "premium usership" promotion) 
 exp_r.log_onto_runtastic(browser)
 # browser.implicitly_wait(8)
-exp_r.navigate_to_latest_activity(browser, last_date)
+runtastic_in_advance = exp_r.navigate_to_latest_activity(browser, last_date)
+if not runtastic_in_advance:
+	print "Strava last activity is more recent than what is in runtastic, stopping there !"
+	exit()
+	
 browser.implicitly_wait(8)
 exp_r.download_relevant_activities(browser, last_date)
 # browser.implicitly_wait(8)
