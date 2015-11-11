@@ -163,7 +163,7 @@ def navigate_to_latest_activity(driver, last_strava_activity):
 						cand.send_keys(Keys.CONTROL + Keys.RETURN)
 						driver.find_element_by_tag_name("body").send_keys(Keys.CONTROL + Keys.TAB)
 						driver.switch_to_window(curr_w_h) # switch focus to current window, ie. the window that has just been opened
-						break 
+						return True 
 				else:
 					pass
 					# print "key words not found"
