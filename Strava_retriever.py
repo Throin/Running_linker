@@ -46,6 +46,11 @@ def navigate_to_history(driver):
 	
 def retrieve_last_activity(driver):
 ## TODO: check we only have one element and this element is indeed the "Date" column
+
+	## TODO: cross check with "running" activity, we don't want to mix activities
+	data_candidates = driver.find_elements_by_class_name("view-col")
+	# print len(data_candidates)
+	
 	top_date_col = driver.find_elements_by_class_name("active")
 	top_date_col = top_date_col[0]
 
@@ -53,15 +58,16 @@ def retrieve_last_activity(driver):
 
 	## TODO: reput the column in descending order : if top_date_col.get_attribute("xx") == u'DESC' then get child and click it
 	date_loc_x = top_date_col.location["x"]
-
-	## TODO: cross check with "running" activity, we don't want to mix activities
-	data_candidates = driver.find_elements_by_class_name("view-col")
-	# print len(data_candidates)
+	print date_loc_x # Keep as this could the reason the following does not go as planned
+	
 	dates  = []
 	for elem in data_candidates:
 	
 		if elem.location["x"] == date_loc_x:
 			dates.append(elem.text)
+		else:
+			# print elem.location["x"], " / ", # To be used possibly as debug later
+			pass
 
 	# print len(dates)
 	## TODO: Extract dates in readable format and return last date

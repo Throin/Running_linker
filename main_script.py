@@ -58,7 +58,7 @@ for dl_file in dl_files:
 	os.rename(dl_dir+"\\"+dl_file, dl_dir + "\\" + new_name)
 	imp_s.import_activity(dl_dir, new_name, upload_btn)
 	# print "starting the wait"
-	ui.WebDriverWait(browser, 25).until(lambda s: s.find_element_by_css_selector("button[class='btn-primary right action-button save-and-view'][style='']").is_displayed())
+	ui.WebDriverWait(browser, 30).until(lambda s: s.find_element_by_css_selector("button[class='btn-primary right action-button save-and-view'][style='']").is_displayed())
 	# print "finished waiting"
 	# save_btn = wait.until(EC.element_to_be_clickable((By.CLASS_NAME, "save-and-view")))
 	save_btn = browser.find_elements_by_class_name("save-and-view")[1]

@@ -17,18 +17,37 @@ class NoActivityException(Exception):
 	pass
 
 def browse_buttons_and_navigate(driver):
-	options_buttons = driver.find_elements_by_id("show_more_options")
-	for btn in options_buttons:
-		if btn.get_attribute("class") == "" and btn.is_displayed():
-			btn.click()
-			childs = btn.find_elements_by_xpath(".//a")
-			for elem in childs:
-				if "charger" in elem.text and elem.is_displayed():
-					print "let's dl"
-					elem.click()
-					driver.find_elements_by_partial_link_text(".tcx")[0].click()
-					driver.find_elements_by_class_name("nav_left")[0].click()
-					return
+	opt_btn = driver.find_element_by_css_selector("span[class='sport-session-info__link']")
+	opt = []
+	if opt_btn:
+		print "found option button, now clicking to unwind menu"
+		opt_btn.click()
+		opt = driver.find_elements_by_css_selector("span[class='runsession-option__name ']")
+		
+	if len(opt) > 0:
+		print "through option menu"
+		for elem in opt:
+			if ".tcx" in elem.text:
+				print "found .tcx download menu"
+				elem.click()
+				close_opt = driver.find_elements_by_css_selector("div[class*='icon-close']")
+				close_ic = [x for x in close_opt if not "colored" in x.get_attribute("class")]
+				close_ic[0].click()
+				nav_left_btn = driver.find_elements_by_css_selector("a[class*='prev-link']")[0]
+				nav_left_btn.click()
+				return
+	# options_buttons = driver.find_elements_by_id("show_more_options")
+	# for btn in options_buttons:
+		# if btn.get_attribute("class") == "" and btn.is_displayed():
+			# btn.click()
+			# childs = btn.find_elements_by_xpath(".//a")
+			# for elem in childs:
+				# if "charger" in elem.text and elem.is_displayed():
+					# print "let's dl"
+					# elem.click()
+					# driver.find_elements_by_partial_link_text(".tcx")[0].click()
+					# driver.find_elements_by_class_name("nav_left")[0].click()
+					# return
 					
 def instantiate_auto_download_browser()	:
 	dl_dir = os.getcwd() + "\\" +"_".join(time.asctime().replace(":", "_").split())
@@ -190,10 +209,15 @@ def navigate_to_latest_activity(driver, last_strava_activity):
 def download_relevant_activities(driver, last_strava_activity):
 	date_in_range = True
 	while (date_in_range):
-		act_date_components = driver.title.split("(")[1].split("|")[0].split() # Warning: this is heavily dependant on runtastic way of displaying things
-		year_current = int(act_date_components[2])
+		# print "driver title: ", driver.title
+		ui.WebDriverWait(driver, 15).until(lambda s: len(s.title) >= 1)
+		# print "driver title: ", driver.title
+		act_date_components = driver.title.split("le")[1].split("/")[0].split(".")
+		# act_date_components = driver.title.split("(")[1].split("|")[0].split() # Warning: this is heavily dependant on runtastic way of displaying things
+		year_current = 2000 + int(act_date_components[2])
 		processed_month = act_date_components[1].strip(",")
-		month_current = month_conversion[processed_month]
+		# month_current = month_conversion[processed_month] # not useful anymore as we already have the month number
+		month_current = int(processed_month)
 		day_current = int(act_date_components[0])
 		act_date = CustDate(year = year_current, month = month_current, day = day_current)
 		if act_date > last_strava_activity:
