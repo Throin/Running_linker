@@ -20,15 +20,15 @@ def browse_buttons_and_navigate(driver):
 	opt_btn = driver.find_element_by_css_selector("span[class='sport-session-info__link']")
 	opt = []
 	if opt_btn:
-		print "found option button, now clicking to unwind menu"
+		# print "found option button, now clicking to unwind menu"
 		opt_btn.click()
 		opt = driver.find_elements_by_css_selector("span[class='runsession-option__name ']")
 		
 	if len(opt) > 0:
-		print "through option menu"
+		# print "through option menu"
 		for elem in opt:
 			if ".tcx" in elem.text:
-				print "found .tcx download menu"
+				print "downloading ", elem.text
 				elem.click()
 				close_opt = driver.find_elements_by_css_selector("div[class*='icon-close']")
 				close_ic = [x for x in close_opt if not "colored" in x.get_attribute("class")]
