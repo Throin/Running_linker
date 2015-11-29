@@ -65,4 +65,8 @@ for dl_file in dl_files:
 	save_btn.click()
 	imp_s.navigate_to_upload_panel(browser)
 
-browser.close()
+s = raw_input("Close browser ? Y/N")
+if "Y" in s:
+	browser.close()
+else:
+	pass
