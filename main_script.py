@@ -56,12 +56,16 @@ for dl_file in dl_files:
 	# print dl_file
 	new_name = str(hash(dl_file)) + ".tcx"
 	os.rename(dl_dir+"\\"+dl_file, dl_dir + "\\" + new_name)
+	act_notes = imp_s.retrieve_notes(dl_dir + "\\" + new_name)
+	print act_notes
 	imp_s.import_activity(dl_dir, new_name, upload_btn)
 	# print "starting the wait"
 	ui.WebDriverWait(browser, 30).until(lambda s: s.find_element_by_css_selector("button[class='btn-primary right action-button save-and-view'][style='']").is_displayed())
 	# print "finished waiting"
 	# save_btn = wait.until(EC.element_to_be_clickable((By.CLASS_NAME, "save-and-view")))
 	save_btn = browser.find_elements_by_class_name("save-and-view")[1]
+	comment_field = browser.find_elements_by_css_selector("textarea[name*='description']")[0]
+	comment_field.send_keys(act_notes)
 	save_btn.click()
 	imp_s.navigate_to_upload_panel(browser)
 

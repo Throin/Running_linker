@@ -2,6 +2,7 @@ from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.action_chains import ActionChains
 import os
+import codecs
 
 from personal import strava_pw, strava_login
 
@@ -52,6 +53,26 @@ def navigate_to_upload_panel(browser):
 				upload_from_file[0].click()
 			
 	return		
+	
+## TODO: handle case where neither <Notes> nor <Track> tags are found. Currently, throw exception at the end of file
+def retrieve_notes(filename):
+	with codecs.open(filename, 'r', encoding='utf-8') as fHandle:
+		found = False
+		while (not found):
+			line = fHandle.next()
+			found = '<Notes>' in line or '<Track>' in line
+		
+		if '<Notes>' in line:
+			#Strip the tags
+			value_no_left_tag = line.split('<Notes>')[1]
+			value_no_tag = value_no_left_tag.split('</Notes>')[0]
+			return value_no_tag
+			
+		elif '<Track>' in line:
+			return str()
+		
+		else:
+			return str()
 	
 if __name__ == "__main__":
 	browser = webdriver.Firefox()
