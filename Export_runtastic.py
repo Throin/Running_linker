@@ -59,6 +59,7 @@ def instantiate_auto_download_browser()	:
 	profile.set_preference("browser.helperApps.neverAsk.saveToDisk", "application/gpx+tcx");
 	profile.set_preference("browser.helperApps.alwaysAsk.force", False);
 	profile.set_preference("browser.download.manager.showWhenStarting", False);
+	profile.set_preference( "intl.accept_languages", "fr, no,en-us,en" )
 
 	driver = webdriver.Firefox(firefox_profile=profile)
 	return driver
