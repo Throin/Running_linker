@@ -29,11 +29,18 @@ if last_date == 0:
 # print last_date
 
 # Third step : download every activity that is not yet in strava according to its date
-browser.get("https://www.runtastic.com")
+passed_login = False
+for try_count in range(10):
+	browser.get("https://www.runtastic.com")
+	# browser.implicitly_wait(8)
+	##TODO: check if this resolves the "premium usership" promotion problem 
+	exp_r.log_onto_runtastic(browser)
+	if "Runtastic : course" in browser.title:
+		passed_login = True
+		break
+		
 # browser.implicitly_wait(8)
-##TODO: deal with the case where we're not on the page we think after logging (example "premium usership" promotion) 
-exp_r.log_onto_runtastic(browser)
-# browser.implicitly_wait(8)
+assert passed_login
 runtastic_in_advance = exp_r.navigate_to_latest_activity(browser, last_date)
 if not runtastic_in_advance:
 	print "Strava last activity is more recent than what is in runtastic, stopping there !"
