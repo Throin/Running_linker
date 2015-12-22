@@ -9,7 +9,7 @@ import sys
 import os
 
 from personal import runtastic_pw, runtastic_login
-from CustDate import CustDate
+from utils.CustDate import CustDate
 
 month_conversion = {"Jan": 1, u'F\xe9vr.': 2, "Mars": 3, "Avr": 4, "Mai": 5, "Juin": 6, "Juil": 7, u'Ao\xfbt': 8, "Sept": 9, "Oct": 10, "Nov": 11, u'D\xe9c': 12}
 

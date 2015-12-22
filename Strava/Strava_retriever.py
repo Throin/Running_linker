@@ -2,7 +2,7 @@ from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.action_chains import ActionChains
 
-from CustDate import CustDate
+from utils.CustDate import CustDate
 
 # personal module should contain your own personal information such as login, password etc.
 from personal import strava_login, strava_pw

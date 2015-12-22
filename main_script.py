@@ -1,6 +1,6 @@
-import Import_strava as imp_s
-import Export_runtastic as exp_r
-import Strava_retriever as st_r
+import Strava.Import_strava as imp_s
+import Runtastic.Export_runtastic as exp_r
+import Strava.Strava_retriever as st_r
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
