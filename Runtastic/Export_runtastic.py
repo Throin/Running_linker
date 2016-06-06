@@ -211,9 +211,10 @@ def download_relevant_activities(driver, last_strava_activity):
 	date_in_range = True
 	while (date_in_range):
 		# print "driver title: ", driver.title
-		ui.WebDriverWait(driver, 15).until(lambda s: len(s.title) >= 1)
-		# print "driver title: ", driver.title
+		ui.WebDriverWait(driver, 15).until(lambda s: len(s.title) >= 1 and ":" in s.title)
+		print "driver title: ", driver.title
 		act_date_components = driver.title.split("le")[1].split("/")[0].split(".")
+		print act_date_components
 		# act_date_components = driver.title.split("(")[1].split("|")[0].split() # Warning: this is heavily dependant on runtastic way of displaying things
 		year_current = 2000 + int(act_date_components[2])
 		processed_month = act_date_components[1].strip(",")
