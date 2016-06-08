@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support import expected_conditions as EC
@@ -17,12 +19,12 @@ class NoActivityException(Exception):
 	pass
 
 def browse_buttons_and_navigate(driver):
-	opt_btn = driver.find_element_by_css_selector("span[class='sport-session-info__link']")
+	opt_btn = driver.find_element_by_css_selector("div[class*='sport-session-options']")
 	opt = []
 	if opt_btn:
 		# print "found option button, now clicking to unwind menu"
 		opt_btn.click()
-		opt = driver.find_elements_by_css_selector("span[class='runsession-option__name ']")
+		opt = driver.find_elements_by_css_selector("div[class='content-box-body']")
 		
 	if len(opt) > 0:
 		# print "through option menu"
@@ -31,8 +33,17 @@ def browse_buttons_and_navigate(driver):
 				print "downloading ", elem.text
 				elem.click()
 				close_opt = driver.find_elements_by_css_selector("div[class*='icon-close']")
-				close_ic = [x for x in close_opt if not "colored" in x.get_attribute("class")]
-				close_ic[0].click()
+				for close_btn in close_opt:
+					try:
+						print "trying to click button"
+						close_btn.click()
+					except:
+						print "caught exception"
+						continue
+					print "breaking from loop"
+					break
+			#	close_ic = [x for x in close_opt if not "colored" in x.get_attribute("class")]
+			#	close_ic[0].click()
 				nav_left_btn = driver.find_elements_by_css_selector("a[class*='prev-link']")[0]
 				nav_left_btn.click()
 				return
@@ -50,11 +61,17 @@ def browse_buttons_and_navigate(driver):
 					# return
 					
 def instantiate_auto_download_browser()	:
-	dl_dir = os.getcwd() + "\\" +"_".join(time.asctime().replace(":", "_").split())
+	dl_dir = os.getcwd() + os.sep +"_".join(time.asctime().replace(":", "_").split())
 	# print dl_dir 
 
+	## TODO: Close notifications when done, otherwise might block vision
 	profile = webdriver.FirefoxProfile()
 	profile.set_preference("browser.download.folderList", 2)
+	profile.set_preference("browser.download.panel.removeFinishedDownloads", True)
+	# This makes the browser know that the notification panel has already been shown, hence it will not display it next time
+	profile.set_preference("browser.download.panel.shown", True)
+	profile.set_preference("browser.download.manager.closeWhenDone", True)
+	profile.set_preference("browser.download.animateNotifications", False)
 	profile.set_preference("browser.download.dir", dl_dir)
 	profile.set_preference("browser.helperApps.neverAsk.saveToDisk", "application/gpx+tcx");
 	profile.set_preference("browser.helperApps.alwaysAsk.force", False);
@@ -212,7 +229,7 @@ def download_relevant_activities(driver, last_strava_activity):
 	while (date_in_range):
 		# print "driver title: ", driver.title
 		ui.WebDriverWait(driver, 15).until(lambda s: len(s.title) >= 1 and ":" in s.title)
-		print "driver title: ", driver.title
+		# print "driver title: ", driver.title
 		act_date_components = driver.title.split("le")[1].split("/")[0].split(".")
 		print act_date_components
 		# act_date_components = driver.title.split("(")[1].split("|")[0].split() # Warning: this is heavily dependant on runtastic way of displaying things

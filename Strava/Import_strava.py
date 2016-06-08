@@ -7,7 +7,7 @@ import codecs
 from personal import strava_pw, strava_login
 
 def import_activity(folder_name, file_name, button):
-	path = folder_name + "\\" + file_name
+	path = folder_name + os.sep + file_name
 	if button.is_displayed():
 		button.send_keys(path)
 	return 

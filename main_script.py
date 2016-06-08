@@ -7,6 +7,10 @@ from selenium.webdriver.support.ui import WebDriverWait
 import selenium.webdriver.support.ui as ui
 import os
 
+import readline, rlcompleter
+
+readline.parse_and_bind("tab:complete")
+
 # First step : instantiate a browser that will be used to sync strava account to runtastic account
 browser = exp_r.instantiate_auto_download_browser()
 
@@ -29,18 +33,11 @@ if last_date == 0:
 # print last_date
 
 # Third step : download every activity that is not yet in strava according to its date
-passed_login = False
-for try_count in range(10):
-	browser.get("https://www.runtastic.com")
-	# browser.implicitly_wait(8)
-	##TODO: check if this resolves the "premium usership" promotion problem 
-	exp_r.log_onto_runtastic(browser)
-	if "Runtastic : course" in browser.title:
-		passed_login = True
-		break
-		
+browser.get("https://www.runtastic.com")
 # browser.implicitly_wait(8)
-assert passed_login
+##TODO: deal with the case where we're not on the page we think after logging (example "premium usership" promotion) 
+exp_r.log_onto_runtastic(browser)
+# browser.implicitly_wait(8)
 runtastic_in_advance = exp_r.navigate_to_latest_activity(browser, last_date)
 if not runtastic_in_advance:
 	print "Strava last activity is more recent than what is in runtastic, stopping there !"
@@ -62,8 +59,8 @@ for dl_file in dl_files:
 	upload_btn = browser.find_elements_by_class_name("files")[0]
 	# print dl_file
 	new_name = str(hash(dl_file)) + ".tcx"
-	os.rename(dl_dir+"\\"+dl_file, dl_dir + "\\" + new_name)
-	act_notes = imp_s.retrieve_notes(dl_dir + "\\" + new_name)
+	os.rename(dl_dir+ os.sep + dl_file, dl_dir + os.sep + new_name)
+	act_notes = imp_s.retrieve_notes(dl_dir + os.sep + new_name)
 	# print act_notes
 	imp_s.import_activity(dl_dir, new_name, upload_btn)
 	# print "starting the wait"
