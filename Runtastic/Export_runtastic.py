@@ -78,7 +78,10 @@ def instantiate_auto_download_browser()	:
 	profile.set_preference("browser.download.manager.showWhenStarting", False);
 	profile.set_preference( "intl.accept_languages", "fr, no,en-us,en" )
 
-	driver = webdriver.Firefox(firefox_profile=profile)
+#	driver = webdriver.Firefox(firefox_profile=profile)
+	opt = webdriver.ChromeOptions()
+	opt.add_argument("--lang=en-US")
+	driver = webdriver.Chrome(chrome_options=opt)
 	return driver
 
 def log_onto_runtastic(driver):

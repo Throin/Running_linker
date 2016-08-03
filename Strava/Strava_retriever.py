@@ -18,31 +18,47 @@ def log_onto_strava(driver):
 	driver.implicitly_wait(8)
 	email_fields = driver.find_elements_by_name("email")
 	for candidate in email_fields:
-		if candidate.is_displayed() and "adresse" in candidate.get_attribute("placeholder"):
+		if candidate.is_displayed() and "email" in candidate.get_attribute("placeholder").lower():
 			candidate.send_keys(strava_login)
 
 	pw_fields = driver.find_elements_by_name("password")
 	for candidate in pw_fields:
-		if "passe" in candidate.get_attribute("placeholder") and candidate.is_displayed():
+		if "pass" in candidate.get_attribute("placeholder").lower() and candidate.is_displayed():
 			candidate.send_keys(strava_pw)
 			candidate.send_keys(Keys.RETURN)
 
 	# At this point, you should be logged on Strava and ready to move on to the next section
-	assert "Tableau" in driver.title
-	return "Tableau" in driver.title
+	if 'lang="en' in driver.page_source:
+		return "Dashboard" in driver.title
+	else:
+		assert "Tableau" in driver.title
+		return "Tableau" in driver.title
 
 def navigate_to_history(driver):
 # This history can be reached from the dashboard through drop down menu "Entrainement" and link "Mes activites"
-	dd_menus = driver.find_elements_by_class_name("drop-down-menu")
-	for menu in dd_menus:
-		if menu.get_attribute("class") == "drop-down-menu enabled" and menu.text == u'Entra\xeenement':
-			hover = ActionChains(driver).move_to_element(menu)
+	if 'lang="en' in driver.page_source:
+		training_menu = driver.find_elements_by_css_selector("a[href*='/training'][class*='selection'")
+		if training_menu:
+			training_menu = training_menu[0]
+			hover = ActionChains(driver).move_to_element(training_menu)
 			hover.perform()
-			
-			activity_candidates = driver.find_elements_by_partial_link_text("Mes acti")
-			# TODO: check that we don't have multiple such elements
-			activity_candidates[0].click()
-			return
+			activity_candidates = driver.find_elements_by_css_selector("a[href*='/training']")
+			for elem in activity_candidates:
+				if "Activities" in elem.text:
+					elem.click()
+					break
+	else:	
+		dd_menus = driver.find_elements_by_class_name("drop-down-menu")
+		for menu in dd_menus:
+			if menu.get_attribute("class") == "drop-down-menu enabled" and menu.text == u'Entra\xeenement':
+				hover = ActionChains(driver).move_to_element(menu)
+				hover.perform()
+				
+				activity_candidates = driver.find_elements_by_partial_link_text("Mes acti")
+				# TODO: check that we don't have multiple such elements
+				activity_candidates[0].click()
+				break
+	return
 	
 def retrieve_last_activity(driver):
 ## TODO: check we only have one element and this element is indeed the "Date" column
@@ -77,7 +93,12 @@ def retrieve_last_activity(driver):
 		# First separate the day from the date, then the different element from the date. To robustify this, we would need to check the format is indeed what we assume here - probably higher in the code, while parsing the "Date" column head
 		processed_raw = indiv_date.split()
 		processed_figures = [int(x) for x in processed_raw[1].split("/")]
-		cust_dates.append(CustDate(day = processed_figures[0], month = processed_figures[1], year = processed_figures[2]))
+		# US date format is kind of retarded putting the month before the day
+		if 'lang="en' in driver.page_source: 
+			cust_dates.append(CustDate(day=processed_figures[1], month=processed_figures[0], year=processed_figures[2]))
+		# Hopefully the rest of the world has at least some clue
+		else:
+			cust_dates.append(CustDate(day = processed_figures[0], month = processed_figures[1], year = processed_figures[2]))
 
 	# print len(cust_dates)
 	if cust_dates:
