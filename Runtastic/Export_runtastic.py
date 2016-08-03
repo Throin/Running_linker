@@ -87,24 +87,22 @@ def instantiate_auto_download_browser()	:
 def log_onto_runtastic(driver):
 
 	# Detect "connect" button
-	connect_btn_candidates = driver.find_elements_by_class_name("bttn")
+	connect_btn_candidates = driver.find_elements_by_partial_link_text("Log in")
 	for candidate in connect_btn_candidates:
-		if "connect" in candidate.text and candidate.is_displayed():
+		if "account" in candidate.text and candidate.is_displayed():
 			candidate.click()
 			break
 
 	########## Go through first page and connect to account ########## 
 	# Detect fields to fill : email input field and password input field
-	input_fields = driver.find_elements_by_class_name("js-input")
+	input_fields = driver.find_elements_by_css_selector("input")
 	mail_field_found = False
 	pw_field_found = False
 	for elem in input_fields:
-		parent = elem.find_element_by_xpath("..")
-		parent_class = parent.get_attribute("class")
-		if "email" in parent_class and "login" in parent_class:
+		if "email" in elem.get_attribute("placeholder").lower():
 			mail_input_field = elem
 			mail_field_found = True
-		elif "password" in parent_class and "login" in parent_class:
+		elif "password" in elem.get_attribute("placeholder").lower():
 			pw_input_field = elem
 			pw_field_found = True
 		else:
