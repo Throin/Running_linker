@@ -33,7 +33,8 @@ if last_date == 0:
 # print last_date
 
 # Third step : download every activity that is not yet in strava according to its date
-browser.get("https://www.runtastic.com")
+browser.execute_script("window.open('https://www.runtastic.com', '_blank');")
+browser.switch_to_window(browser.window_handles[1])
 # browser.implicitly_wait(8)
 ##TODO: deal with the case where we're not on the page we think after logging (example "premium usership" promotion) 
 exp_r.log_onto_runtastic(browser)

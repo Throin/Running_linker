@@ -24,13 +24,16 @@ def browse_buttons_and_navigate(driver):
 	if opt_btn:
 		# print "found option button, now clicking to unwind menu"
 		opt_btn.click()
+#		driver.implicitly_wait(0.5)
+		# dirty trick for the moment, the problem is we click to fast so sometimes the next 'find_elements' returns elements from (probably) previous page which is bad. Rather than sleeping, we should wait before clicking on the menu btn that the page is trully loaded
+		time.sleep(1)
 		opt = driver.find_elements_by_css_selector("div[class='content-box-body']")
 		
-	if len(opt) > 0:
+	if opt:
 		# print "through option menu"
 		for elem in opt:
 			if ".tcx" in elem.text:
-				print "downloading ", elem.text
+#				print "downloading ", elem.text
 				elem.click()
 				close_opt = driver.find_elements_by_css_selector("div[class*='icon-close']")
 				for close_btn in close_opt:
@@ -197,10 +200,11 @@ def navigate_to_latest_activity(driver, last_strava_activity):
 					if found_date > last_strava_activity:
 						# print "activity to add, dated: ", found_date
 						# The following opens a new tab, which originally was supposed to be better for navigation - one new tab for each activity. This is no longer what's considered but we keep the original "new window"
-						curr_w_h = driver.current_window_handle
-						cand.send_keys(Keys.CONTROL + Keys.RETURN)
-						driver.find_element_by_tag_name("body").send_keys(Keys.CONTROL + Keys.TAB)
-						driver.switch_to_window(curr_w_h) # switch focus to current window, ie. the window that has just been opened
+					#	curr_w_h = driver.current_window_handle
+					#	cand.send_keys(Keys.CONTROL + Keys.RETURN)
+					#	driver.find_element_by_tag_name("body").send_keys(Keys.CONTROL + Keys.TAB)
+					#	driver.switch_to_window(curr_w_h) # switch focus to current window, ie. the window that has just been opened
+						cand.click()
 						return True 
 				else:
 					pass
