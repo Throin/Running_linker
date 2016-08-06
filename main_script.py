@@ -51,13 +51,24 @@ exp_r.download_relevant_activities(browser, last_date)
 # Fourth step : import all activities on strava
 imp_s.connect_to_strava_dashboard(browser)
 imp_s.navigate_to_upload_panel(browser)
-dl_dir = browser.profile.default_preferences["browser.download.dir"]
+#dl_dir = browser.profile.default_preferences["browser.download.dir"]
+dl_dir = '/home/matthieu/Downloads' ## TODO: remove ASAP, this bugfix will only work on current setup
 # print dl_dir
 wait = WebDriverWait(browser, 10)
 
-dl_files = os.listdir(dl_dir)
+full_dl_files = os.listdir(dl_dir)
+dl_files = [filetcx for filetcx in full_dl_files if '.tcx' in filetcx]
 for dl_file in dl_files:
-	upload_btn = browser.find_elements_by_class_name("files")[0]
+	print dl_file
+	upload_btns = browser.find_elements_by_css_selector("a[href*='upload']")
+	upload_btn = [elem for elem in upload_btns if "file" in elem.text.lower()]
+	if upload_btn:
+		upload_btn[0].click()
+		ui.WebDriverWait(browser, 5).until(lambda s: '.tcx' in s.find_element_by_css_selector("span[class='multi_text']").text)
+		upload_btn = browser.find_elements_by_css_selector("input[type*='file']")
+		upload_btn = upload_btn[0]
+	else:
+		raise Exception("Could not find the upload btn") 
 	# print dl_file
 	new_name = str(hash(dl_file)) + ".tcx"
 	os.rename(dl_dir+ os.sep + dl_file, dl_dir + os.sep + new_name)
@@ -72,6 +83,8 @@ for dl_file in dl_files:
 	comment_field = browser.find_elements_by_css_selector("textarea[name*='description']")[0]
 	comment_field.send_keys(act_notes)
 	save_btn.click()
+	ui.WebDriverWait(browser, 10).until(lambda s: s.find_element_by_css_selector("a[data-menu*='segment']").is_displayed())
+	os.remove(dl_dir + os.sep + new_name)
 	imp_s.navigate_to_upload_panel(browser)
 
 s = raw_input("Close browser ? Y/N")

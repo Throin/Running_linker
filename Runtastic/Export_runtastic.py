@@ -27,7 +27,7 @@ def browse_buttons_and_navigate(driver):
 #		driver.implicitly_wait(0.5)
 		# dirty trick for the moment, the problem is we click to fast so sometimes the next 'find_elements' returns elements from (probably) previous page which is bad. Rather than sleeping, we should wait before clicking on the menu btn that the page is trully loaded
 		time.sleep(1)
-		opt = driver.find_elements_by_css_selector("div[class='content-box-body']")
+		opt = driver.find_elements_by_css_selector("span[class*='link']")
 		
 	if opt:
 		# print "through option menu"
