@@ -24,9 +24,7 @@ def browse_buttons_and_navigate(driver):
 	if opt_btn:
 		# print "found option button, now clicking to unwind menu"
 		opt_btn.click()
-#		driver.implicitly_wait(0.5)
-		# dirty trick for the moment, the problem is we click to fast so sometimes the next 'find_elements' returns elements from (probably) previous page which is bad. Rather than sleeping, we should wait before clicking on the menu btn that the page is trully loaded
-		time.sleep(1)
+		ui.WebDriverWait(driver, 3).until(lambda s: s.find_elements_by_css_selector("div[class*='modal-box']") != [])
 		opt = driver.find_elements_by_css_selector("span[class*='link']")
 		
 	if opt:
@@ -38,30 +36,18 @@ def browse_buttons_and_navigate(driver):
 				close_opt = driver.find_elements_by_css_selector("div[class*='icon-close']")
 				for close_btn in close_opt:
 					try:
-						print "trying to click button"
+		#				print "trying to click button"
 						close_btn.click()
 					except:
-						print "caught exception"
+		#				print "caught exception"
 						continue
-					print "breaking from loop"
+		#			print "breaking from loop"
 					break
 			#	close_ic = [x for x in close_opt if not "colored" in x.get_attribute("class")]
 			#	close_ic[0].click()
 				nav_left_btn = driver.find_elements_by_css_selector("a[class*='prev-link']")[0]
 				nav_left_btn.click()
 				return
-	# options_buttons = driver.find_elements_by_id("show_more_options")
-	# for btn in options_buttons:
-		# if btn.get_attribute("class") == "" and btn.is_displayed():
-			# btn.click()
-			# childs = btn.find_elements_by_xpath(".//a")
-			# for elem in childs:
-				# if "charger" in elem.text and elem.is_displayed():
-					# print "let's dl"
-					# elem.click()
-					# driver.find_elements_by_partial_link_text(".tcx")[0].click()
-					# driver.find_elements_by_class_name("nav_left")[0].click()
-					# return
 					
 def instantiate_auto_download_browser()	:
 	dl_dir = os.getcwd() + os.sep +"_".join(time.asctime().replace(":", "_").split())
@@ -262,6 +248,11 @@ def download_relevant_activities(driver, last_strava_activity):
 			date_in_range = False
 	
 if __name__ == "__main__":					
+	import readline
+	import rlcompleter
+
+	readline.parse_and_bind('tab:complete')
+
 	passed_args = sys.argv
 	date_components = passed_args[1:]
 	for s in sys.argv:
